@@ -1,0 +1,194 @@
+<div class="dashboard-interface">
+  <!-- Command Palette Header -->
+  <div class="command-header">
+    <div class="command-bar">
+      <div class="command-brand">
+        <span class="brand-symbol">⌘</span>
+        <span class="brand-text">WQT Dashboard</span>
+      </div>
+      <div class="command-actions">
+        <a routerLink="/public/home" class="command-action">
+          <span class="action-key">⌘1</span>
+          <span class="action-label">Classique</span>
+        </a>
+        <a routerLink="/public/grid" class="command-action">
+          <span class="action-key">⌘2</span>
+          <span class="action-label">Grille</span>
+        </a>
+        <a routerLink="/public/card" class="command-action">
+          <span class="action-key">⌘3</span>
+          <span class="action-label">Cartes</span>
+        </a>
+        <a routerLink="/public/minimal" class="command-action">
+          <span class="action-key">⌘4</span>
+          <span class="action-label">Minimal</span>
+        </a>
+        <a routerLink="/public/modern" class="command-action">
+          <span class="action-key">⌘5</span>
+          <span class="action-label">Modern</span>
+        </a>
+        <a routerLink="/public/compact" class="command-action">
+          <span class="action-key">⌘6</span>
+          <span class="action-label">Compact</span>
+        </a>
+        <a routerLink="/public/elegant" class="command-action">
+          <span class="action-key">⌘7</span>
+          <span class="action-label">Elegant</span>
+        </a>
+        <a routerLink="/public/industrial" class="command-action">
+          <span class="action-key">⌘8</span>
+          <span class="action-label">Industrial</span>
+        </a>
+        <a routerLink="/public/zen" class="command-action">
+          <span class="action-key">⌘9</span>
+          <span class="action-label">Zen</span>
+        </a>
+      </div>
+      <div class="command-status">
+        <div class="status-dot"></div>
+        <span class="status-text">Active</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Dashboard Header -->
+  <div class="dashboard-header">
+    <div class="header-content">
+      <h1 class="dashboard-title">Tableau de Bord</h1>
+      <div class="live-indicator">
+        <div class="pulse-dot"></div>
+        <span>Temps réel</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Key Metrics Row -->
+  <div class="metrics-row">
+    <div class="metric-card primary">
+      <div class="metric-icon">📊</div>
+      <div class="metric-content">
+        <div class="metric-value">{{ getOpenCheckouts() }}</div>
+        <div class="metric-label">Caisses actives</div>
+      </div>
+    </div>
+    <div class="metric-card success">
+      <div class="metric-icon">⏱️</div>
+      <div class="metric-content">
+        <div class="metric-value">{{ getAverageWaitTime() }}min</div>
+        <div class="metric-label">Temps moyen</div>
+      </div>
+    </div>
+    <div class="metric-card warning">
+      <div class="metric-icon">👥</div>
+      <div class="metric-content">
+        <div class="metric-value">{{ getTotalWaiting() }}</div>
+        <div class="metric-label">Total en attente</div>
+      </div>
+    </div>
+    <div class="metric-card info">
+      <div class="metric-icon">📈</div>
+      <div class="metric-content">
+        <div class="metric-value">{{ getEfficiencyScore() }}%</div>
+        <div class="metric-label">Efficacité</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Priority Sections -->
+  <div class="priority-sections">
+    <!-- Critical Section -->
+    @if (getCriticalCheckouts().length > 0) {
+      <div class="priority-section critical">
+        <div class="section-header">
+          <div class="section-title">
+            <div class="priority-indicator critical"></div>
+            <h3>Situations Critiques</h3>
+            <span class="count-badge">{{ getCriticalCheckouts().length }}</span>
+          </div>
+          <div class="section-actions">
+            <button class="btn-emergency">🚨 Alerte générale</button>
+          </div>
+        </div>
+        <div class="priority-items">
+          @for (checkout of getCriticalCheckouts(); track checkout.id) {
+            <div class="priority-item critical">
+              <div class="item-header">
+                <div class="checkout-badge critical">#{{ checkout.id }}</div>
+                <div class="urgency-timer">{{ Math.floor(checkout.stuckTime / 1000) }}s bloquée</div>
+              </div>
+              <div class="item-actions">
+                <button class="btn-priority critical">Intervention immédiate</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Urgent Section -->
+    @if (getUrgentCheckouts().length > 0) {
+      <div class="priority-section urgent">
+        <div class="section-header">
+          <div class="section-title">
+            <div class="priority-indicator urgent"></div>
+            <h3>Situations Urgentes</h3>
+            <span class="count-badge">{{ getUrgentCheckouts().length }}</span>
+          </div>
+        </div>
+        <div class="priority-grid">
+          @for (checkout of getUrgentCheckouts(); track checkout.id) {
+            <div class="priority-card urgent">
+              <div class="card-header">
+                <span class="checkout-number">#{{ checkout.id }}</span>
+                <span class="wait-time">{{ checkout.estimatedWait }}min</span>
+              </div>
+              <div class="card-actions">
+                <button class="btn-quick urgent">Traiter</button>
+              </div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Normal Section -->
+    @if (getNormalCheckouts().length > 0) {
+      <div class="priority-section normal">
+        <div class="section-header">
+          <div class="section-title">
+            <div class="priority-indicator normal"></div>
+            <h3>Flux Normal</h3>
+            <span class="count-badge">{{ getNormalCheckouts().length }}</span>
+          </div>
+        </div>
+        <div class="normal-flow">
+          @for (checkout of getNormalCheckouts(); track checkout.id) {
+            <div class="flow-item">
+              <div class="flow-number">#{{ checkout.id }}</div>
+              <div class="flow-status">
+                <div class="flow-progress"></div>
+              </div>
+              <div class="flow-time">{{ checkout.estimatedWait }}min</div>
+            </div>
+          }
+        </div>
+      </div>
+    }
+  </div>
+
+  <!-- Analytics Footer -->
+  <div class="analytics-footer">
+    <div class="analytics-card">
+      <h4>Pic d'affluence</h4>
+      <p>{{ getPeakHours() }}</p>
+    </div>
+    <div class="analytics-card">
+      <h4>Taux de réussite</h4>
+      <p>{{ getSuccessRate() }}%</p>
+    </div>
+    <div class="analytics-card">
+      <h4>Temps de traitement</h4>
+      <p>{{ getAverageWaitTime() * 0.8 | number:'1.1-1' }}min</p>
+    </div>
+  </div>
+</div>

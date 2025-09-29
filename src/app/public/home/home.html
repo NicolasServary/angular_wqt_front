@@ -1,0 +1,114 @@
+<!-- Navigation Header -->
+<header class="classique-header">
+  <div class="header-content">
+    <div class="logo-section">
+      <h1 class="logo">WQT</h1>
+      <span class="view-title">Vue Classique</span>
+    </div>
+    <nav class="nav-menu">
+      <a routerLink="/public/grid" class="nav-item">Grille</a>
+      <a routerLink="/public/card" class="nav-item">Cartes</a>
+      <a routerLink="/public/minimal" class="nav-item">Minimal</a>
+      <a routerLink="/public/modern" class="nav-item">Modern</a>
+      <a routerLink="/public/compact" class="nav-item">Compact</a>
+      <a routerLink="/public/elegant" class="nav-item">Elegant</a>
+      <a routerLink="/public/industrial" class="nav-item">Industrial</a>
+      <a routerLink="/public/zen" class="nav-item">Zen</a>
+      <a routerLink="/public/dashboard" class="nav-item">Dashboard</a>
+    </nav>
+  </div>
+</header>
+
+<div class="queue-interface">
+  <!-- Header Stats -->
+  <div class="header-stats">
+    <div class="stat-card">
+      <div class="stat-number">{{ getOpenCheckouts() }}</div>
+      <div class="stat-label">Aujourd'hui</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number green">{{ getAverageWaitTime() }} min</div>
+      <div class="stat-label">Temps moyen</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-number blue">{{ getSuccessRate() }}%</div>
+      <div class="stat-label">Taux succès</div>
+    </div>
+  </div>
+
+  <!-- Queue Section -->
+  <div class="queue-section">
+    <div class="section-header">
+      <h2>File d'attente</h2>
+      <div class="queue-badge">{{ getTotalWaiting() }} clients</div>
+    </div>
+
+    <div class="queue-list">
+      @for (checkout of getSortedCheckouts(); track checkout.id) {
+        <div class="queue-item" [class]="getPriorityClass(checkout)">
+          <div class="client-info">
+            <div class="client-icon">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+              </svg>
+            </div>
+            <div class="client-details">
+              <div class="client-id">Client #{{ checkout.id }}{{ (checkout.id < 10 ? '0' : '') }}</div>
+              <div class="client-location">Caisse - Allée {{ checkout.id }}</div>
+            </div>
+            @if (checkout.waitingCount >= 10) {
+              <div class="urgent-badge">URGENT</div>
+            } @else {
+              <div class="normal-badge">Normal</div>
+            }
+            <div class="wait-time">{{ checkout.estimatedWait }} min</div>
+          </div>
+
+          <div class="action-buttons">
+            <button class="btn-accept">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+              </svg>
+              J'y vais
+            </button>
+            <button class="btn-decline">
+              <svg width="16" height="16" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
+              </svg>
+              Je ne peux pas
+            </button>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <!-- Performance Section -->
+  <div class="performance-section">
+    <h3>Ma performance aujourd'hui</h3>
+    <div class="performance-stats">
+      <div class="perf-stat">
+        <div class="perf-icon">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"></path>
+          </svg>
+        </div>
+        <div class="perf-details">
+          <div class="perf-number">{{ getOpenCheckouts() }}</div>
+          <div class="perf-label">Clients aidés</div>
+        </div>
+      </div>
+      <div class="perf-stat">
+        <div class="perf-icon green">
+          <svg width="24" height="24" viewBox="0 0 20 20" fill="currentColor">
+            <path d="M2 11a1 1 0 011-1h2a1 1 0 011 1v5a1 1 0 01-1 1H3a1 1 0 01-1-1v-5zM8 7a1 1 0 011-1h2a1 1 0 011 1v9a1 1 0 01-1 1H9a1 1 0 01-1-1V7zM14 4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 01-1 1h-2a1 1 0 01-1-1V4z"></path>
+          </svg>
+        </div>
+        <div class="perf-details">
+          <div class="perf-number">€2,450</div>
+          <div class="perf-label">CA généré</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

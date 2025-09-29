@@ -1,0 +1,291 @@
+<div class="compact-layout" [class.collapsed]="isCollapsed">
+  <!-- Compact Sidebar -->
+  <nav class="compact-sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+      <button class="sidebar-toggle" (click)="isCollapsed = !isCollapsed">
+        <span class="toggle-icon">{{isCollapsed ? '→' : '←'}}</span>
+      </button>
+
+      @if (!isCollapsed) {
+        <div class="brand-info">
+          <div class="brand-logo">W</div>
+          <div class="brand-details">
+            <h1 class="brand-title">WQT</h1>
+            <p class="brand-subtitle">Compact View</p>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-group">
+        @if (!isCollapsed) {
+          <span class="nav-label">Navigation</span>
+        }
+
+        <div class="nav-links">
+          <a routerLink="/public/home" class="nav-link" title="Classique">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Classique</span>
+            }
+          </a>
+
+          <a routerLink="/public/grid" class="nav-link" title="Grille">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Grille</span>
+            }
+          </a>
+
+          <a routerLink="/public/card" class="nav-link" title="Cartes">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-5 14H5v-2h9v2zm5-4H5v-2h14v2zm0-4H5V7h14v2z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Cartes</span>
+            }
+          </a>
+
+          <a routerLink="/public/minimal" class="nav-link" title="Minimal">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Minimal</span>
+            }
+          </a>
+
+          <a routerLink="/public/modern" class="nav-link" title="Modern">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 9 5.16-.74 9-4.45 9-10V7l-10-5z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Modern</span>
+            }
+          </a>
+
+          <div class="nav-link active" title="Compact">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 11H7v8h2v-8zm4-4H11v12h2V7zm4-4H15v16h2V3z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Compact</span>
+              <div class="active-dot"></div>
+            }
+          </div>
+
+          <a routerLink="/public/dashboard" class="nav-link" title="Dashboard">
+            <span class="nav-icon">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+              </svg>
+            </span>
+            @if (!isCollapsed) {
+              <span class="nav-text">Dashboard</span>
+            }
+          </a>
+        </div>
+      </div>
+
+      @if (!isCollapsed) {
+        <div class="quick-stats">
+          <span class="nav-label">Quick Stats</span>
+          <div class="mini-stats">
+            <div class="mini-stat">
+              <span class="mini-value">{{ getOpenCheckouts() }}</span>
+              <span class="mini-label">Open</span>
+            </div>
+            <div class="mini-stat">
+              <span class="mini-value">{{ getTotalWaiting() }}</span>
+              <span class="mini-label">Waiting</span>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+
+    <div class="sidebar-footer">
+      @if (!isCollapsed) {
+        <div class="status-info">
+          <div class="status-indicator active"></div>
+          <span class="status-label">System Active</span>
+        </div>
+      } @else {
+        <div class="status-indicator active"></div>
+      }
+    </div>
+  </nav>
+
+  <!-- Compact Main Content -->
+  <main class="compact-main">
+    <!-- Compact Header -->
+    <header class="compact-header">
+      <div class="header-left">
+        <h1 class="page-title">Queue Monitor</h1>
+        <div class="live-indicator">
+          <div class="pulse-dot"></div>
+          <span>Live</span>
+        </div>
+      </div>
+
+      <div class="header-right">
+        <div class="metric-chips">
+          <div class="chip primary">
+            <span class="chip-value">{{ getAverageWaitTime() }}</span>
+            <span class="chip-unit">min avg</span>
+          </div>
+          <div class="chip success">
+            <span class="chip-value">{{ getSuccessRate() }}</span>
+            <span class="chip-unit">% success</span>
+          </div>
+        </div>
+
+        <div class="header-actions">
+          <button class="action-btn refresh" title="Refresh">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"/>
+            </svg>
+          </button>
+          <button class="action-btn filter" title="Filter">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+            </svg>
+          </button>
+          <button class="action-btn settings" title="Settings">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.14,12.94c0.04-0.3,0.06-0.61,0.06-0.94c0-0.32-0.02-0.64-0.07-0.94l2.03-1.58c0.18-0.14,0.23-0.41,0.12-0.61 l-1.92-3.32c-0.12-0.22-0.37-0.29-0.59-0.22l-2.39,0.96c-0.5-0.38-1.03-0.7-1.62-0.94L14.4,2.81c-0.04-0.24-0.24-0.41-0.48-0.41 h-3.84c-0.24,0-0.43,0.17-0.47,0.41L9.25,5.35C8.66,5.59,8.12,5.92,7.63,6.29L5.24,5.33c-0.22-0.08-0.47,0-0.59,0.22L2.74,8.87 C2.62,9.08,2.66,9.34,2.86,9.48l2.03,1.58C4.84,11.36,4.8,11.69,4.8,12s0.02,0.64,0.07,0.94l-2.03,1.58 c-0.18,0.14-0.23,0.41-0.12,0.61l1.92,3.32c0.12,0.22,0.37,0.29,0.59,0.22l2.39-0.96c0.5,0.38,1.03,0.7,1.62,0.94l0.36,2.54 c0.05,0.24,0.24,0.41,0.48,0.41h3.84c0.24,0,0.44-0.17,0.47-0.41l0.36-2.54c0.59-0.24,1.13-0.56,1.62-0.94l2.39,0.96 c0.22,0.08,0.47,0,0.59-0.22l1.92-3.32c0.12-0.22,0.07-0.47-0.12-0.61L19.14,12.94z M12,15.6c-1.98,0-3.6-1.62-3.6-3.6 s1.62-3.6,3.6-3.6s3.6,1.62,3.6,3.6S13.98,15.6,12,15.6z"/>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Compact Content Grid -->
+    <div class="content-grid">
+      <!-- Quick Overview Cards -->
+      <section class="overview-section">
+        <div class="overview-cards">
+          <div class="overview-card total">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1zM10 6a2 2 0 0 1 4 0v1h-4V6zm8 13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V9h2v1a1 1 0 0 0 2 0V9h4v1a1 1 0 0 0 2 0V9h2v10z"/>
+              </svg>
+            </div>
+            <div class="card-data">
+              <span class="card-number">{{ getOpenCheckouts() }}</span>
+              <span class="card-label">Active Checkouts</span>
+            </div>
+          </div>
+
+          <div class="overview-card waiting">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2A10,10 0 0,0 2,12A10,10 0 0,0 12,22A10,10 0 0,0 22,12A10,10 0 0,0 12,2M16.2,16.2L11,13V7H12.5V12.2L17,14.9L16.2,16.2Z"/>
+              </svg>
+            </div>
+            <div class="card-data">
+              <span class="card-number">{{ getTotalWaiting() }}</span>
+              <span class="card-label">Total Waiting</span>
+            </div>
+          </div>
+
+          <div class="overview-card critical" *ngIf="hasCriticalCheckouts()">
+            <div class="card-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12,2L13.09,8.26L22,9L17,14L18.18,23L12,19.77L5.82,23L7,14L2,9L10.91,8.26L12,2Z"/>
+              </svg>
+            </div>
+            <div class="card-data">
+              <span class="card-number">{{ getCriticalCount() }}</span>
+              <span class="card-label">Critical</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Compact Queue List -->
+      <section class="queue-section">
+        <div class="section-header">
+          <h2 class="section-title">Active Queues</h2>
+          <span class="queue-count">{{ getSortedCheckouts().length }} items</span>
+        </div>
+
+        <div class="compact-list">
+          @for (checkout of getSortedCheckouts(); track checkout.id) {
+            <div class="queue-item" [class]="getPriorityClass(checkout)">
+              <div class="item-left">
+                <div class="checkout-badge">
+                  <span class="badge-text">#{{ checkout.id }}</span>
+                </div>
+
+                <div class="checkout-info">
+                  <span class="checkout-name">Checkout {{ checkout.id }}</span>
+                  <span class="checkout-detail">{{ checkout.waitingCount }} in queue</span>
+                </div>
+              </div>
+
+              <div class="item-center">
+                <div class="priority-indicator">
+                  @switch (getPriorityClass(checkout)) {
+                    @case ('critical') {
+                      <span class="priority-dot critical" title="Critical"></span>
+                      <span class="priority-text">Critical</span>
+                    }
+                    @case ('urgent') {
+                      <span class="priority-dot urgent" title="Urgent"></span>
+                      <span class="priority-text">Urgent</span>
+                    }
+                    @default {
+                      <span class="priority-dot normal" title="Normal"></span>
+                      <span class="priority-text">Normal</span>
+                    }
+                  }
+                </div>
+              </div>
+
+              <div class="item-right">
+                <div class="wait-info">
+                  <span class="wait-time">{{ checkout.estimatedWait }}</span>
+                  <span class="wait-unit">min</span>
+                </div>
+
+                <div class="item-actions">
+                  <button class="quick-btn accept" title="Accept">✓</button>
+                  <button class="quick-btn decline" title="Decline">✗</button>
+                </div>
+              </div>
+            </div>
+          }
+
+          @if (getSortedCheckouts().length === 0) {
+            <div class="empty-state">
+              <div class="empty-icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M9 11H7v8h2v-8zm4-4H11v12h2V7zm4-4H15v16h2V3z"/>
+                </svg>
+              </div>
+              <p class="empty-text">All queues are clear!</p>
+            </div>
+          }
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
