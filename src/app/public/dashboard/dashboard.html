@@ -1,194 +1,199 @@
-<div class="dashboard-interface">
-  <!-- Command Palette Header -->
-  <div class="command-header">
-    <div class="command-bar">
-      <div class="command-brand">
-        <span class="brand-symbol">⌘</span>
-        <span class="brand-text">WQT Dashboard</span>
-      </div>
-      <div class="command-actions">
-        <a routerLink="/public/home" class="command-action">
-          <span class="action-key">⌘1</span>
-          <span class="action-label">Classique</span>
-        </a>
-        <a routerLink="/public/grid" class="command-action">
-          <span class="action-key">⌘2</span>
-          <span class="action-label">Grille</span>
-        </a>
-        <a routerLink="/public/card" class="command-action">
-          <span class="action-key">⌘3</span>
-          <span class="action-label">Cartes</span>
-        </a>
-        <a routerLink="/public/minimal" class="command-action">
-          <span class="action-key">⌘4</span>
-          <span class="action-label">Minimal</span>
-        </a>
-        <a routerLink="/public/modern" class="command-action">
-          <span class="action-key">⌘5</span>
-          <span class="action-label">Modern</span>
-        </a>
-        <a routerLink="/public/compact" class="command-action">
-          <span class="action-key">⌘6</span>
-          <span class="action-label">Compact</span>
-        </a>
-        <a routerLink="/public/elegant" class="command-action">
-          <span class="action-key">⌘7</span>
-          <span class="action-label">Elegant</span>
-        </a>
-        <a routerLink="/public/industrial" class="command-action">
-          <span class="action-key">⌘8</span>
-          <span class="action-label">Industrial</span>
-        </a>
-        <a routerLink="/public/zen" class="command-action">
-          <span class="action-key">⌘9</span>
-          <span class="action-label">Zen</span>
-        </a>
-      </div>
-      <div class="command-status">
-        <div class="status-dot"></div>
-        <span class="status-text">Active</span>
-      </div>
-    </div>
-  </div>
+<div class="dashboard-layout" [class.collapsed]="isCollapsed">
+  <!-- Professional Sidebar -->
+  <nav class="professional-sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+      <button class="sidebar-toggle" (click)="isCollapsed = !isCollapsed">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+      </button>
 
-  <!-- Main Dashboard Header -->
-  <div class="dashboard-header">
-    <div class="header-content">
-      <h1 class="dashboard-title">Tableau de Bord</h1>
-      <div class="live-indicator">
-        <div class="pulse-dot"></div>
-        <span>Temps réel</span>
+      <div class="brand-section">
+        <h1 class="brand-title">WQT</h1>
+        <p class="brand-subtitle">Dashboard Analytics</p>
       </div>
     </div>
-  </div>
 
-  <!-- Key Metrics Row -->
-  <div class="metrics-row">
-    <div class="metric-card primary">
-      <div class="metric-icon">📊</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ getOpenCheckouts() }}</div>
-        <div class="metric-label">Caisses actives</div>
-      </div>
-    </div>
-    <div class="metric-card success">
-      <div class="metric-icon">⏱️</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ getAverageWaitTime() }}min</div>
-        <div class="metric-label">Temps moyen</div>
-      </div>
-    </div>
-    <div class="metric-card warning">
-      <div class="metric-icon">👥</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ getTotalWaiting() }}</div>
-        <div class="metric-label">Total en attente</div>
-      </div>
-    </div>
-    <div class="metric-card info">
-      <div class="metric-icon">📈</div>
-      <div class="metric-content">
-        <div class="metric-value">{{ getEfficiencyScore() }}%</div>
-        <div class="metric-label">Efficacité</div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Priority Sections -->
-  <div class="priority-sections">
-    <!-- Critical Section -->
-    @if (getCriticalCheckouts().length > 0) {
-      <div class="priority-section critical">
-        <div class="section-header">
-          <div class="section-title">
-            <div class="priority-indicator critical"></div>
-            <h3>Situations Critiques</h3>
-            <span class="count-badge">{{ getCriticalCheckouts().length }}</span>
-          </div>
-          <div class="section-actions">
-            <button class="btn-emergency">🚨 Alerte générale</button>
-          </div>
-        </div>
-        <div class="priority-items">
-          @for (checkout of getCriticalCheckouts(); track checkout.id) {
-            <div class="priority-item critical">
-              <div class="item-header">
-                <div class="checkout-badge critical">#{{ checkout.id }}</div>
-                <div class="urgency-timer">{{ Math.floor(checkout.stuckTime / 1000) }}s bloquée</div>
-              </div>
-              <div class="item-actions">
-                <button class="btn-priority critical">Intervention immédiate</button>
-              </div>
+    <div class="sidebar-content">
+      <div class="nav-section" [class.collapsed]="isCollapsed">
+        <div class="nav-menu">
+          <a routerLink="/public/home" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+              </svg>
             </div>
-          }
-        </div>
-      </div>
-    }
+            <div class="item-content">
+              <span class="item-title">Classique</span>
+            </div>
+          </a>
 
-    <!-- Urgent Section -->
-    @if (getUrgentCheckouts().length > 0) {
-      <div class="priority-section urgent">
-        <div class="section-header">
-          <div class="section-title">
-            <div class="priority-indicator urgent"></div>
-            <h3>Situations Urgentes</h3>
-            <span class="count-badge">{{ getUrgentCheckouts().length }}</span>
+          <a routerLink="/public/grid" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Grille</span>
+            </div>
+          </a>
+
+          <a routerLink="/public/minimal" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Minimale</span>
+            </div>
+          </a>
+
+          <a routerLink="/public/modern" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 9 5.16-.74 9-4.45 9-10V7l-10-5z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Moderne</span>
+            </div>
+          </a>
+
+          <div class="nav-item active">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Dashboard</span>
+            </div>
+            @if (!isCollapsed) {
+              <div class="active-indicator"></div>
+            }
           </div>
         </div>
-        <div class="priority-grid">
-          @for (checkout of getUrgentCheckouts(); track checkout.id) {
-            <div class="priority-card urgent">
-              <div class="card-header">
-                <span class="checkout-number">#{{ checkout.id }}</span>
-                <span class="wait-time">{{ checkout.estimatedWait }}min</span>
-              </div>
-              <div class="card-actions">
-                <button class="btn-quick urgent">Traiter</button>
-              </div>
-            </div>
-          }
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="status-section">
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          <span class="status-text">Système actif</span>
         </div>
       </div>
-    }
+    </div>
+  </nav>
 
-    <!-- Normal Section -->
-    @if (getNormalCheckouts().length > 0) {
-      <div class="priority-section normal">
-        <div class="section-header">
-          <div class="section-title">
-            <div class="priority-indicator normal"></div>
-            <h3>Flux Normal</h3>
-            <span class="count-badge">{{ getNormalCheckouts().length }}</span>
+  <!-- Main Dashboard Content -->
+  <div class="dashboard-interface">
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+      <h1 class="dashboard-title">Dashboard Overview</h1>
+      <p class="dashboard-subtitle">Monitor your store's real-time checkout and customer flow metrics</p>
+    </div>
+
+    <!-- Key Metrics Section -->
+    <div class="metrics-section">
+      <div class="metrics-grid">
+        <div class="metric-card">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="9" cy="7" r="4"></circle>
+              <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+              <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-label">Max Waiting Queue</div>
+            <div class="metric-number">20</div>
+            <div class="metric-info">
+              <span class="metric-detail">Peak at 6PM today</span>
+              <span class="metric-trend metric-trend-down">↓12% from last period</span>
+            </div>
           </div>
         </div>
-        <div class="normal-flow">
-          @for (checkout of getNormalCheckouts(); track checkout.id) {
-            <div class="flow-item">
-              <div class="flow-number">#{{ checkout.id }}</div>
-              <div class="flow-status">
-                <div class="flow-progress"></div>
-              </div>
-              <div class="flow-time">{{ checkout.estimatedWait }}min</div>
+
+        <div class="metric-card">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-label">Average Queue Time</div>
+            <div class="metric-number">8.5</div>
+            <div class="metric-info">
+              <span class="metric-detail">Minutes per customer</span>
+              <span class="metric-trend metric-trend-up">↑5% from last period</span>
             </div>
-          }
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+              <circle cx="8.5" cy="7" r="4"></circle>
+              <path d="M20 8v6M23 11h-6"></path>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-label">Current Affluence</div>
+            <div class="metric-number">145</div>
+            <div class="metric-info">
+              <span class="metric-detail">Customers in store</span>
+              <span class="metric-trend metric-trend-up">↑8% from last period</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="1" x2="12" y2="23"></line>
+              <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <div class="metric-content">
+            <div class="metric-label">Daily Average</div>
+            <div class="metric-number">102</div>
+            <div class="metric-info">
+              <span class="metric-detail">Customers per hour</span>
+              <span class="metric-trend metric-trend-up">↑3% from last period</span>
+            </div>
+          </div>
         </div>
       </div>
-    }
-  </div>
+    </div>
 
-  <!-- Analytics Footer -->
-  <div class="analytics-footer">
-    <div class="analytics-card">
-      <h4>Pic d'affluence</h4>
-      <p>{{ getPeakHours() }}</p>
-    </div>
-    <div class="analytics-card">
-      <h4>Taux de réussite</h4>
-      <p>{{ getSuccessRate() }}%</p>
-    </div>
-    <div class="analytics-card">
-      <h4>Temps de traitement</h4>
-      <p>{{ getAverageWaitTime() * 0.8 | number:'1.1-1' }}min</p>
+    <!-- Affluence Analysis Section -->
+    <div class="affluence-section">
+      <div class="affluence-header">
+        <div class="affluence-title-wrapper">
+          <div class="affluence-icon">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+            </svg>
+          </div>
+          <h3 class="affluence-title">Affluence Analysis</h3>
+        </div>
+        <div class="affluence-controls">
+          <button class="period-btn" [class.active]="selectedPeriod === 'day'" (click)="setPeriod('day')">Day</button>
+          <button class="period-btn" [class.active]="selectedPeriod === 'week'" (click)="setPeriod('week')">Week</button>
+          <button class="period-btn" [class.active]="selectedPeriod === 'month'" (click)="setPeriod('month')">Month</button>
+          <button class="period-btn" [class.active]="selectedPeriod === 'year'" (click)="setPeriod('year')">Year</button>
+          <input type="date" class="date-picker" (change)="onDateChange($event)">
+        </div>
+      </div>
+      <div class="affluence-chart-container">
+        <canvas #affluenceChart class="affluence-chart"></canvas>
+      </div>
     </div>
   </div>
 </div>

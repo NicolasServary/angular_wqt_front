@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { CheckoutService } from '../services/checkout';
@@ -9,16 +9,68 @@ import { CheckoutService } from '../services/checkout';
   templateUrl: './grid.html',
   styleUrl: './grid.css'
 })
-export class Grid {
+export class Grid implements OnInit, OnDestroy {
   checkouts: ReturnType<CheckoutService['getCheckouts']>;
   getStatusClass: (checkout: any) => string;
   getWaitingText: (count: number) => string;
   sidebarCollapsed = false;
   isCollapsed = false;
+  alertInterval?: number;
+  alertActive = false;
+  criticalCheckouts: any[] = [];
   constructor(private checkoutService: CheckoutService) {
     this.checkouts = this.checkoutService.getCheckouts();
     this.getStatusClass = this.checkoutService.getStatusClass.bind(this.checkoutService);
     this.getWaitingText = this.checkoutService.getWaitingText.bind(this.checkoutService);
+  }
+
+  ngOnInit() {
+    this.startAlertMonitoring();
+  }
+
+  ngOnDestroy() {
+    if (this.alertInterval) {
+      clearInterval(this.alertInterval);
+    }
+  }
+
+  startAlertMonitoring() {
+    this.alertInterval = window.setInterval(() => {
+      this.checkForCriticalSituations();
+    }, 2000);
+  }
+
+  checkForCriticalSituations() {
+    const critical = this.checkouts().filter(checkout =>
+      checkout.waitingCount >= 8 && checkout.status === 'open'
+    );
+
+    this.criticalCheckouts = critical;
+
+    if (critical.length > 0 && !this.alertActive) {
+      this.triggerAlert();
+    } else if (critical.length === 0) {
+      this.alertActive = false;
+    }
+  }
+
+  triggerAlert() {
+    this.alertActive = true;
+
+    // Visual alert animation will be handled by CSS
+
+    // Optional audio alert (commented out for now)
+    // try {
+    //   const audio = new Audio();
+    //   audio.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQcGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2';
+    //   audio.play();
+    // } catch (error) {
+    //   console.log('Audio alert not available');
+    // }
+  }
+
+  getAlertClass(): string {
+    return this.alertActive && this.criticalCheckouts.length > 0 ? 'alert-active' : '';
   }
 
   getTotalWaiting(): number {
@@ -26,6 +78,10 @@ export class Grid {
   }
 
   getOpenCheckouts(): number {
+    return this.checkouts().filter(checkout => checkout.status === 'open').length;
+  }
+
+  getActiveCheckouts(): number {
     return this.checkouts().filter(checkout => checkout.status === 'open').length;
   }
 

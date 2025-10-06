@@ -1,0 +1,103 @@
+{
+  "cameras": {
+    "rtsp://API:api_1617@192.168.15.250/cam/realmonitor?channel=4&subtype=0": {
+      "zones": {
+        "entree": {
+          "points": [
+            [
+              0.46875,
+              0.005555555555555556
+            ],
+            [
+              0.428125,
+              0.3685185185185185
+            ],
+            [
+              0.5822916666666667,
+              0.4324074074074074
+            ],
+            [
+              0.6135416666666667,
+              0.011111111111111112
+            ]
+          ],
+          "max_time": 5,
+          "time_classes": [
+            "helmet",
+            "bin"
+          ],
+          "time_alert": "Visage Masqué"
+        },
+        "magasin": {
+          "points": [
+            [
+              0.4703125,
+              0.010185185185185186
+            ],
+            [
+              0.0020833333333333333,
+              0.005555555555555556
+            ],
+            [
+              0.0005208333333333333,
+              0.9981481481481481
+            ],
+            [
+              1,
+              0.9990740740740741
+            ],
+            [
+              0.9994791666666667,
+              0.005555555555555556
+            ],
+            [
+              0.6166666666666667,
+              0.011111111111111112
+            ],
+            [
+              0.5822916666666667,
+              0.42962962962962964
+            ],
+            [
+              0.4296875,
+              0.3685185185185185
+            ]
+          ],
+          "max_time": 99999,
+          "time_classes": [
+            "helmet",
+            "bin"
+          ],
+          "time_alert": "Visage Masqué"
+        }
+      },
+      "camera_id": "0a6a08d7-dbd1-41b6-9deb-dc1f81d5da42",
+      "kind": "vm",
+      "classes": ["person"],
+      "alert_duration": 10,
+      "time_max": 5,
+      "model_pd": "yolo11s.pt",
+      "model_face": "buffalo_sc",
+      "model_face_part": "face_part_yolov8n.pt",
+      "person_conf": 0.7,
+      "face_conf": 0.5,
+      "face_part_conf": 0.3,
+      "face_part_average_threshold": 5,
+      "iou": 0.6
+    }
+  },
+  "logger_id": "59952f95-cde3-4ec5-b234-7374c942081b",
+  "tracker": {
+    "tracker_type": "botsort",
+    "track_high_thresh": 0.6,
+    "track_low_thresh": 0.3,
+    "new_track_thresh": 0.5,
+    "track_buffer": 30,
+    "match_thresh": 0.9,
+    "fuse_score": true,
+    "gmc_method": "sparseOptFlow",
+    "proximity_thresh": 0.5,
+    "appearance_thresh": 0.9,
+    "with_reid": false
+  }
+}

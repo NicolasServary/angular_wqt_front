@@ -14,32 +14,12 @@ export const routes: Routes = [
         loadComponent: () => import('./public/grid/grid').then(m => m.Grid)
       },
       {
-        path: 'card',
-        loadComponent: () => import('./public/card/card').then(m => m.Card)
-      },
-      {
         path: 'minimal',
         loadComponent: () => import('./public/minimal/minimal').then(m => m.Minimal)
       },
       {
         path: 'modern',
         loadComponent: () => import('./public/modern/modern').then(m => m.Modern)
-      },
-      {
-        path: 'compact',
-        loadComponent: () => import('./public/compact/compact').then(m => m.Compact)
-      },
-      {
-        path: 'elegant',
-        loadComponent: () => import('./public/elegant/elegant').then(m => m.Elegant)
-      },
-      {
-        path: 'industrial',
-        loadComponent: () => import('./public/industrial/industrial').then(m => m.Industrial)
-      },
-      {
-        path: 'zen',
-        loadComponent: () => import('./public/zen/zen').then(m => m.Zen)
       },
       {
         path: 'dashboard',
