@@ -1,107 +1,19 @@
-<div class="grid-layout">
-  <!-- Professional Sidebar -->
-  <nav class="professional-sidebar" [class.collapsed]="isCollapsed">
-    <div class="sidebar-header">
-      <button class="sidebar-toggle" (click)="isCollapsed = !isCollapsed">
-        ☰
-      </button>
-
-      <div class="brand-section">
-        <h1 class="brand-title">WQT</h1>
-        <p class="brand-subtitle">Queue Management</p>
-      </div>
-    </div>
-
-    <div class="sidebar-content">
-      <div class="nav-section">
-        <h3 class="section-title">Vues disponibles</h3>
-        <div class="nav-menu">
-          <a routerLink="/public/home" class="nav-item">
-            <div class="item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M4 6h16v2H4zm0 5h16v2H4zm0 5h16v2H4z"/>
-              </svg>
-            </div>
-            <div class="item-content">
-              <span class="item-title">Vue Classique</span>
-              <span class="item-desc">Liste détaillée</span>
-            </div>
-          </a>
-
-          <div class="nav-item active">
-            <div class="item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
-              </svg>
-            </div>
-            <div class="item-content">
-              <span class="item-title">Vue Grille</span>
-              <span class="item-desc">Cartes compactes</span>
-            </div>
-            <div class="active-indicator"></div>
-          </div>
-
-          <a routerLink="/public/minimal" class="nav-item">
-            <div class="item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
-              </svg>
-            </div>
-            <div class="item-content">
-              <span class="item-title">Vue Minimale</span>
-              <span class="item-desc">Table simple</span>
-            </div>
-          </a>
-
-          <a routerLink="/public/dashboard" class="nav-item">
-            <div class="item-icon">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
-              </svg>
-            </div>
-            <div class="item-content">
-              <span class="item-title">Dashboard</span>
-              <span class="item-desc">Métriques</span>
-            </div>
-          </a>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="sidebar-footer">
-      <div class="status-section">
-        <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span class="status-text">Système actif</span>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-  <!-- Main Content -->
-  <div class="grid-interface" [class]="getAlertClass()">
+<div class="grid-interface" [class]="getAlertClass()">
     <!-- Alert Notifications -->
-    @if (criticalCheckouts.length > 0) {
+    @if (!isAllCheckoutsEquipped()) {
       <div class="notification-container">
-        <div class="notification notification-critical">
+        <div class="notification notification-warning">
           <div class="notification-icon">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <circle cx="12" cy="12" r="10"></circle>
-              <line x1="12" y1="8" x2="12" y2="12"></line>
-              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+              <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+              <line x1="12" y1="9" x2="12" y2="13"></line>
+              <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
           </div>
           <div class="notification-content">
-            <h4 class="notification-title">Critical Alert: Overloaded Checkouts</h4>
-            <p class="notification-message">{{ criticalCheckouts.length }} checkout(s) have critical waiting times. Consider opening additional lanes.</p>
+            <h4 class="notification-title">Équipement incomplet</h4>
+            <p class="notification-message">Pour avoir accès à la prédiction, veuillez équiper toutes vos caisses.</p>
           </div>
-          <button class="notification-close">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
         </div>
       </div>
     }
@@ -109,48 +21,37 @@
     <!-- Queue Section -->
   <div class="queue-section">
     <div class="section-header">
-      <h2>Vue grille</h2>
-      <div class="queue-badge">{{ getSortedCheckouts().length }} caisses</div>
+      <h2>Vue en direct</h2>
+      <div class="queue-badge" (click)="onCheckoutBadgeClick()">{{ getSortedCheckouts().length }} caisses équipées / {{ totalCheckouts }}</div>
     </div>
 
     <div class="checkout-grid">
       @for (checkout of getSortedCheckouts(); track checkout.id) {
         <div class="checkout-card" [class]="getPriorityClass(checkout)">
           <div class="card-header">
-            <div class="checkout-number">#{{ checkout.id }}</div>
-            @if (checkout.waitingCount >= 10) {
-              @if (checkout.stuckTime > 9000) {
+            <div class="header-top">
+              <div class="checkout-number">Caisse #{{ checkout.id }}</div>
+            </div>
+            @if (checkout.waitingCount >= 5) {
+              <div class="header-badge">
                 <div class="priority-badge critical">CRITIQUE</div>
-              } @else {
+              </div>
+            } @else if (checkout.waitingCount === 4) {
+              <div class="header-badge">
                 <div class="priority-badge urgent">URGENT</div>
-              }
-            }
-          </div>
-
-          <div class="card-body">
-            @if (checkout.status === 'open' && checkout.waitingCount > 0) {
-              <div class="wait-display">
-                <div class="wait-time">{{ checkout.estimatedWait }}min</div>
               </div>
             }
           </div>
 
-          <div class="card-footer">
-            <div class="action-buttons">
-              <button class="btn-accept">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
-                </svg>
-              </button>
-              <button class="btn-decline">
-                <svg width="14" height="14" viewBox="0 0 20 20" fill="currentColor">
-                  <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-                </svg>
-              </button>
-            </div>
+          <div class="card-body">
+            @if (checkout.status === 'open') {
+              <div class="queue-display">
+                <div class="queue-number">{{ checkout.waitingCount }}</div>
+                <div class="queue-label">{{ checkout.waitingCount === 1 ? 'personne' : 'personnes' }}</div>
+              </div>
+            }
           </div>
         </div>
       }
     </div>
   </div>
-</div>

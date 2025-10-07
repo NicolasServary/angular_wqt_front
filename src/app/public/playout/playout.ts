@@ -1,12 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet} from '@angular/router';
+import { RouterOutlet, RouterLink } from '@angular/router';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-playout',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, RouterLink, CommonModule],
   templateUrl: './playout.html',
   styleUrl: './playout.css'
 })
 export class Playout {
-
+  isCollapsed = false;
 }

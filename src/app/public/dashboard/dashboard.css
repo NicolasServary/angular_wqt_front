@@ -5,162 +5,6 @@
   background: #f8fafc;
 }
 
-/* =================== PROFESSIONAL SIDEBAR (Same as Grid) =================== */
-.professional-sidebar {
-  width: 280px;
-  background: #1f2937;
-  color: white;
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  left: 0;
-  top: 0;
-  height: 100vh;
-  overflow-y: auto;
-  transition: width 0.3s ease;
-}
-
-.professional-sidebar.collapsed {
-  width: 70px;
-}
-
-.professional-sidebar.collapsed .brand-section,
-.professional-sidebar.collapsed .item-content,
-.professional-sidebar.collapsed .status-section {
-  display: none;
-}
-
-.professional-sidebar.collapsed .nav-item {
-  justify-content: center;
-  padding: 0.875rem 0;
-}
-
-.professional-sidebar.collapsed .item-icon {
-  margin: 0;
-}
-
-.sidebar-header {
-  padding: 2rem 1.5rem 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sidebar-toggle {
-  width: 28px;
-  height: 28px;
-  border-radius: 50%;
-  border: none;
-  background: #3b82f6;
-  color: white;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-  transition: background 0.2s ease;
-  margin-bottom: 1.5rem;
-}
-
-.sidebar-toggle:hover {
-  background: #2563eb;
-}
-
-.brand-section {
-  text-align: center;
-}
-
-.brand-title {
-  font-size: 1.75rem;
-  font-weight: 700;
-  margin: 0 0 0.25rem 0;
-  color: white;
-}
-
-.brand-subtitle {
-  font-size: 0.875rem;
-  color: #9ca3af;
-  margin: 0;
-  font-weight: 400;
-}
-
-.sidebar-content {
-  flex: 1;
-  padding: 1.5rem 0;
-}
-
-.nav-section {
-  padding: 0 1.5rem;
-}
-
-.nav-menu {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 1rem;
-  border-radius: 8px;
-  color: #d1d5db;
-  text-decoration: none;
-  transition: all 0.2s ease;
-  position: relative;
-  cursor: pointer;
-}
-
-.nav-item:hover {
-  background: rgba(255, 255, 255, 0.05);
-  color: white;
-}
-
-.nav-item.active {
-  background: #3b82f6;
-  color: white;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-}
-
-.nav-item.active:hover {
-  background: #2563eb;
-}
-
-.item-icon {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 20px;
-  height: 20px;
-}
-
-.item-content {
-  display: flex;
-  flex-direction: column;
-  gap: 0.125rem;
-  flex: 1;
-}
-
-.item-title {
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1.25;
-}
-
-.active-indicator {
-  position: absolute;
-  right: 0.5rem;
-  width: 6px;
-  height: 6px;
-  background: white;
-  border-radius: 50%;
-}
-
-.sidebar-footer {
-  padding: 1.5rem;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 .status-section {
   display: flex;
   align-items: center;
@@ -194,22 +38,33 @@
 
 /* =================== DASHBOARD INTERFACE =================== */
 .dashboard-interface {
-  flex: 1;
-  margin-left: 280px;
-  padding: 2.5rem 3rem;
+  width: 100%;
+  padding: 0;
   background: #fafafa;
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
   position: relative;
-}
-
-.dashboard-layout.collapsed .dashboard-interface {
-  margin-left: 70px;
 }
 
 /* Dashboard Header */
 .dashboard-header {
   margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.header-text {
+  flex: 1;
+  min-width: 300px;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
 }
 
 .dashboard-title {
@@ -252,6 +107,7 @@
   border: none;
   transition: all 0.2s ease;
   position: relative;
+  min-height: 150px;
 }
 
 .metric-card:hover {
@@ -273,6 +129,10 @@
 
 .metric-content {
   flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 132px;
 }
 
 .metric-label {
@@ -318,6 +178,36 @@
 
 .metric-trend-down {
   color: #ef4444;
+}
+
+.metric-trend-neutral {
+  color: #6b7280;
+}
+
+.download-btn {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid #2563eb;
+  background: #2563eb;
+  color: white;
+  border-radius: 8px;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  white-space: nowrap;
+}
+
+.download-btn:hover {
+  background: #1d4ed8;
+  border-color: #1d4ed8;
+}
+
+.download-btn svg {
+  flex-shrink: 0;
 }
 
 /* Affluence Section - Professional Clean Display */
@@ -376,6 +266,7 @@
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .period-btn {

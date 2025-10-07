@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { CheckoutService } from '../services/checkout';
 
 @Component({
   selector: 'app-grid',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './grid.html',
   styleUrl: './grid.css'
 })
@@ -18,6 +17,8 @@ export class Grid implements OnInit, OnDestroy {
   alertInterval?: number;
   alertActive = false;
   criticalCheckouts: any[] = [];
+  totalCheckouts = 15;
+
   constructor(private checkoutService: CheckoutService) {
     this.checkouts = this.checkoutService.getCheckouts();
     this.getStatusClass = this.checkoutService.getStatusClass.bind(this.checkoutService);
@@ -41,15 +42,12 @@ export class Grid implements OnInit, OnDestroy {
   }
 
   checkForCriticalSituations() {
-    const critical = this.checkouts().filter(checkout =>
-      checkout.waitingCount >= 8 && checkout.status === 'open'
-    );
+    const openCheckouts = this.checkouts().filter(checkout => checkout.status === 'open').length;
 
-    this.criticalCheckouts = critical;
-
-    if (critical.length > 0 && !this.alertActive) {
-      this.triggerAlert();
-    } else if (critical.length === 0) {
+    // Alert if not all checkouts are equipped
+    if (openCheckouts < this.totalCheckouts) {
+      this.alertActive = true;
+    } else {
       this.alertActive = false;
     }
   }
@@ -70,7 +68,24 @@ export class Grid implements OnInit, OnDestroy {
   }
 
   getAlertClass(): string {
-    return this.alertActive && this.criticalCheckouts.length > 0 ? 'alert-active' : '';
+    return this.alertActive ? 'alert-active' : '';
+  }
+
+  isAllCheckoutsEquipped(): boolean {
+    const openCheckouts = this.checkouts().filter(checkout => checkout.status === 'open').length;
+    return openCheckouts >= this.totalCheckouts;
+  }
+
+  onCheckoutBadgeClick() {
+    const userInput = prompt(`Entrez le nombre total de caisses (actuellement: ${this.totalCheckouts}):`, this.totalCheckouts.toString());
+    if (userInput !== null) {
+      const newTotal = parseInt(userInput, 10);
+      if (!isNaN(newTotal) && newTotal > 0 && newTotal <= 50) {
+        this.totalCheckouts = newTotal;
+      } else {
+        alert('Veuillez entrer un nombre valide entre 1 et 50');
+      }
+    }
   }
 
   getTotalWaiting(): number {
@@ -97,9 +112,10 @@ export class Grid implements OnInit, OnDestroy {
   }
 
   getPriorityClass(checkout: any): string {
-    if (checkout.waitingCount >= 10) {
-      // If stuck for more than 9 seconds, make it critical
-      if (checkout.stuckTime > 9000) return 'critical';
+    if (checkout.waitingCount >= 5) {
+      return 'critical';
+    }
+    if (checkout.waitingCount === 4) {
       return 'urgent';
     }
     return 'normal';
@@ -107,7 +123,7 @@ export class Grid implements OnInit, OnDestroy {
 
   getSortedCheckouts() {
     return this.checkouts()
-      .filter(checkout => checkout.status === 'open' && checkout.waitingCount > 0)
+      .filter(checkout => checkout.status === 'open')
       .sort((a, b) => {
         const aPriority = this.getPriorityLevel(a);
         const bPriority = this.getPriorityLevel(b);
@@ -123,14 +139,12 @@ export class Grid implements OnInit, OnDestroy {
   }
 
   private getPriorityLevel(checkout: any): number {
-    if (checkout.waitingCount >= 10) {
-      if (checkout.stuckTime > 9000) return 3; // Critical
+    if (checkout.waitingCount >= 5) {
+      return 3; // Critical
+    }
+    if (checkout.waitingCount === 4) {
       return 2; // Urgent
     }
     return 1; // Normal
-  }
-
-  toggleSidebar(): void {
-    this.sidebarCollapsed = !this.sidebarCollapsed;
   }
 }

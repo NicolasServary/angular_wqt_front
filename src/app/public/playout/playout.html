@@ -1,2 +1,57 @@
+<div class="layout-container" [class.collapsed]="isCollapsed">
+  <nav class="professional-sidebar" [class.collapsed]="isCollapsed">
+    <div class="sidebar-header">
+      <button class="sidebar-toggle" (click)="isCollapsed = !isCollapsed">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+          <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+        </svg>
+      </button>
 
-<router-outlet></router-outlet>
+      <div class="brand-section">
+        <h1 class="brand-title">Checkout Flow</h1>
+        <p class="brand-subtitle">la Data pour votre usage</p>
+      </div>
+    </div>
+
+    <div class="sidebar-content">
+      <div class="nav-section" [class.collapsed]="isCollapsed">
+        <div class="nav-menu">
+          <a routerLink="/public/grid" routerLinkActive="active" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Grille</span>
+            </div>
+          </a>
+
+          <a routerLink="/public/dashboard" routerLinkActive="active" class="nav-item">
+            <div class="item-icon">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
+              </svg>
+            </div>
+            <div class="item-content">
+              <span class="item-title">Dashboard</span>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+
+    <div class="sidebar-footer">
+      <div class="status-section">
+        <div class="status-indicator">
+          <div class="status-dot"></div>
+          <span class="status-text">Système actif</span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main-content">
+    <router-outlet></router-outlet>
+  </div>
+</div>

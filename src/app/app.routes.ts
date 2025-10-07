@@ -6,20 +6,8 @@ export const routes: Routes = [
     loadComponent: () => import('./public/playout/playout').then(m => m.Playout),
     children: [
       {
-        path: 'home',
-        loadComponent: () => import('./public/home/home').then(m => m.Home)
-      },
-      {
         path: 'grid',
         loadComponent: () => import('./public/grid/grid').then(m => m.Grid)
-      },
-      {
-        path: 'minimal',
-        loadComponent: () => import('./public/minimal/minimal').then(m => m.Minimal)
-      },
-      {
-        path: 'modern',
-        loadComponent: () => import('./public/modern/modern').then(m => m.Modern)
       },
       {
         path: 'dashboard',
@@ -27,7 +15,7 @@ export const routes: Routes = [
       },
       {
         path: '',
-        redirectTo: 'home',
+        redirectTo: 'grid',
         pathMatch: 'full'
       }
     ]

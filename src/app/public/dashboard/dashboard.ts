@@ -1,16 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef, AfterViewInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { CheckoutService } from '../services/checkout';
 import { Chart, ChartConfiguration, registerables } from 'chart.js';
+import html2canvas from 'html2canvas';
 
 Chart.register(...registerables);
 
 @Component({
   selector: 'app-dashboard',
-  imports: [CommonModule, RouterLink],
+  imports: [CommonModule],
   templateUrl: './dashboard.html',
-  styleUrl: './dashboard.css'
+  styleUrl: './dashboard.css',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('affluenceChart') affluenceChart?: ElementRef<HTMLCanvasElement>;
@@ -22,14 +23,37 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
   updateInterval?: number;
   chart?: Chart;
   selectedPeriod: 'day' | 'week' | 'month' | 'year' = 'day';
+  selectedDate?: string;
+  metrics = {
+    avgQueueLength: 0,
+    avgQueueLengthDetail: '',
+    avgQueueLengthTrend: 0,
+    avgQueueLengthTrendText: '',
+    peakCrowd: 0,
+    peakCrowdDetail: '',
+    peakCrowdTrend: 0,
+    peakCrowdTrendText: '',
+    avgCrowd: 0,
+    avgCrowdDetail: '',
+    avgCrowdTrend: 0,
+    avgCrowdTrendText: '',
+    topCheckouts: '',
+    topCheckoutsDetail: '',
+    topCheckoutsTrend: 0,
+    topCheckoutsTrendText: ''
+  };
 
-  constructor(private checkoutService: CheckoutService) {
+  constructor(
+    private checkoutService: CheckoutService,
+    private cdr: ChangeDetectorRef
+  ) {
     this.checkouts = this.checkoutService.getCheckouts();
     this.getStatusClass = this.checkoutService.getStatusClass.bind(this.checkoutService);
     this.getWaitingText = this.checkoutService.getWaitingText.bind(this.checkoutService);
   }
 
   ngOnInit() {
+    this.updateMetrics();
     this.updateInterval = window.setInterval(() => {
       // Force component update every 5 seconds for real-time metrics
     }, 5000);
@@ -50,6 +74,9 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
 
   initChart() {
     if (!this.affluenceChart) return;
+    if (this.chart) {
+      this.chart.destroy();
+    }
 
     const ctx = this.affluenceChart.nativeElement.getContext('2d');
     if (!ctx) return;
@@ -67,11 +94,12 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
             borderWidth: 2,
             fill: true,
             tension: 0.4,
-            pointRadius: 4,
-            pointHoverRadius: 6,
+            pointRadius: 3,
+            pointHoverRadius: 5,
             pointBackgroundColor: '#2563eb',
             pointBorderColor: '#fff',
-            pointBorderWidth: 2
+            pointBorderWidth: 2,
+            pointHitRadius: 10
           },
           {
             label: 'Average Waiting Queue',
@@ -81,17 +109,32 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
             borderWidth: 2,
             fill: true,
             tension: 0.4,
-            pointRadius: 4,
-            pointHoverRadius: 6,
+            pointRadius: 3,
+            pointHoverRadius: 5,
             pointBackgroundColor: '#10b981',
             pointBorderColor: '#fff',
-            pointBorderWidth: 2
+            pointBorderWidth: 2,
+            pointHitRadius: 10
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        animation: {
+          duration: 800,
+          easing: 'easeInOutQuart',
+          onComplete: () => {},
+          delay: 0
+        },
+        interaction: {
+          mode: 'nearest',
+          intersect: false
+        },
+        hover: {
+          mode: 'nearest',
+          intersect: false
+        },
         plugins: {
           legend: {
             display: true,
@@ -201,14 +244,117 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
 
   setPeriod(period: 'day' | 'week' | 'month' | 'year') {
     this.selectedPeriod = period;
+    this.updateMetrics();
     this.updateChart();
+    this.cdr.markForCheck();
   }
 
   onDateChange(event: Event) {
     const input = event.target as HTMLInputElement;
+    this.selectedDate = input.value;
     console.log('Selected date:', input.value);
-    // You can add custom logic here to fetch data for the selected date
+    this.updateMetrics();
     this.updateChart();
+    this.cdr.markForCheck();
+  }
+
+  async downloadData() {
+    const timestamp = new Date().toISOString().split('T')[0];
+
+    // Download CSV data
+    const csvData = this.generateCSVData();
+    const csvBlob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+    const csvLink = document.createElement('a');
+    const csvUrl = URL.createObjectURL(csvBlob);
+
+    csvLink.setAttribute('href', csvUrl);
+    csvLink.setAttribute('download', `dashboard_data_${this.selectedPeriod}_${timestamp}.csv`);
+    csvLink.style.visibility = 'hidden';
+    document.body.appendChild(csvLink);
+    csvLink.click();
+    document.body.removeChild(csvLink);
+    URL.revokeObjectURL(csvUrl);
+
+    // Capture screenshot using html2canvas
+    try {
+      const element = document.querySelector('.dashboard-interface') as HTMLElement;
+
+      if (element) {
+        console.log('Capturing screenshot...');
+        const canvas = await html2canvas(element, {
+          backgroundColor: '#fafafa',
+          scale: 2,
+          logging: true,
+          useCORS: true,
+          allowTaint: true,
+          removeContainer: true
+        });
+
+        console.log('Canvas created:', canvas);
+
+        // Convert canvas to blob and download
+        canvas.toBlob((blob) => {
+          if (blob) {
+            console.log('Blob created:', blob);
+            const imgUrl = URL.createObjectURL(blob);
+            const imgLink = document.createElement('a');
+            imgLink.href = imgUrl;
+            imgLink.download = `dashboard_screenshot_${this.selectedPeriod}_${timestamp}.png`;
+            document.body.appendChild(imgLink);
+            imgLink.click();
+            document.body.removeChild(imgLink);
+            URL.revokeObjectURL(imgUrl);
+            console.log('Screenshot downloaded');
+          } else {
+            console.error('Failed to create blob from canvas');
+          }
+        }, 'image/png');
+      } else {
+        console.error('Dashboard interface element not found');
+      }
+    } catch (error) {
+      console.error('Error capturing screenshot:', error);
+    }
+  }
+
+  private generateCSVData(): string {
+    const labels = this.getChartLabels();
+    const entryData = this.getEntryData();
+    const waitingData = this.getWaitingData();
+    const timestamp = new Date().toLocaleString('fr-FR');
+
+    let csv = `Dashboard Export - ${this.selectedPeriod.toUpperCase()}\n`;
+    csv += `Generated on: ${timestamp}\n`;
+    if (this.selectedDate) {
+      csv += `Selected Date: ${this.selectedDate}\n`;
+    }
+    csv += '\n';
+
+    // Add Key Metrics
+    csv += 'KEY METRICS\n';
+    csv += `Average Queue Length,${this.metrics.avgQueueLength},${this.metrics.avgQueueLengthDetail}\n`;
+    csv += `Peak Crowd,${this.metrics.peakCrowd},${this.metrics.peakCrowdDetail}\n`;
+    csv += `Average Crowd,${this.metrics.avgCrowd},${this.metrics.avgCrowdDetail}\n`;
+    csv += `Top Checkouts,${this.metrics.topCheckouts},${this.metrics.topCheckoutsDetail}\n`;
+    csv += '\n';
+
+    // Add Trends
+    csv += 'TRENDS\n';
+    csv += `Average Queue Length Trend,${this.metrics.avgQueueLengthTrend}%,${this.metrics.avgQueueLengthTrendText}\n`;
+    csv += `Peak Crowd Trend,${this.metrics.peakCrowdTrend}%,${this.metrics.peakCrowdTrendText}\n`;
+    csv += `Average Crowd Trend,${this.metrics.avgCrowdTrend}%,${this.metrics.avgCrowdTrendText}\n`;
+    csv += `Top Checkouts Trend,${this.metrics.topCheckoutsTrend},${this.metrics.topCheckoutsTrendText}\n`;
+    csv += '\n';
+
+    // Add Chart Data
+    csv += 'CHART DATA\n';
+    csv += 'Period,Customer Entry,Average Waiting Queue\n';
+
+    for (let i = 0; i < labels.length; i++) {
+      csv += `${labels[i]},${entryData[i]},${waitingData[i]}\n`;
+    }
+
+    return csv;
   }
 
   updateChart() {
@@ -271,4 +417,74 @@ export class Dashboard implements OnInit, OnDestroy, AfterViewInit {
     if (totalWaiting > 15) return 'medium';
     return 'low';
   }
-}
+
+  private randomInRange(min: number, max: number): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private randomTrend(min: number = -20, max: number = 20): number {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+  }
+
+  private formatTrendText(trend: number, unit: string = '%'): string {
+    if (trend === 0) return 'Aucun changement depuis la période précédente';
+    const direction = trend > 0 ? '↑' : '↓';
+    return `${direction}${Math.abs(trend)}${unit} depuis la période précédente`;
+  }
+
+  private getPeriodTimeRange(): string {
+    const hours = ['8h', '9h', '10h', '11h', '12h', '13h', '14h', '15h', '16h', '17h', '18h', '19h'];
+    const randomHour = hours[Math.floor(Math.random() * hours.length)];
+    const randomMinute = this.randomInRange(0, 59).toString().padStart(2, '0');
+    return `${randomHour}${randomMinute}`;
+  }
+
+  updateMetrics() {
+    // Generate random metrics based on period
+    const periodMultiplier = {
+      day: 1,
+      week: 7,
+      month: 30,
+      year: 365
+    }[this.selectedPeriod];
+
+    // Average Queue Length
+    this.metrics.avgQueueLength = this.randomInRange(3, 12);
+    this.metrics.avgQueueLengthDetail = `personnes en moyenne par caisse active`;
+    this.metrics.avgQueueLengthTrend = this.randomTrend(-15, 5);
+    this.metrics.avgQueueLengthTrendText = this.formatTrendText(this.metrics.avgQueueLengthTrend);
+
+    // Peak Crowd
+    this.metrics.peakCrowd = this.randomInRange(8, 25);
+    const checkoutNum = this.randomInRange(1, 12);
+    const timeDetail = this.selectedPeriod === 'day'
+      ? `à ${this.getPeriodTimeRange()}`
+      : this.selectedPeriod === 'week'
+      ? `le ${['Lundi', 'Mardi', 'Mercredi', 'Jeudi', 'Vendredi', 'Samedi', 'Dimanche'][this.randomInRange(0, 6)]}`
+      : this.selectedPeriod === 'month'
+      ? `en semaine ${this.randomInRange(1, 4)}`
+      : `en ${['janvier', 'février', 'mars', 'avril', 'mai', 'juin', 'juillet', 'août', 'septembre', 'octobre', 'novembre', 'décembre'][this.randomInRange(0, 11)]}`;
+    this.metrics.peakCrowdDetail = `personnes • Caisse ${checkoutNum} ${timeDetail}`;
+    this.metrics.peakCrowdTrend = this.randomTrend(-10, 15);
+    this.metrics.peakCrowdTrendText = this.formatTrendText(this.metrics.peakCrowdTrend);
+
+    // Average Crowd
+    this.metrics.avgCrowd = this.randomInRange(85, 220);
+    this.metrics.avgCrowdDetail = `clients en moyenne dans le magasin`;
+    this.metrics.avgCrowdTrend = this.randomTrend(-12, 18);
+    this.metrics.avgCrowdTrendText = this.formatTrendText(this.metrics.avgCrowdTrend);
+
+    // Top Checkouts
+    const top1 = this.randomInRange(1, 12);
+    let top2 = this.randomInRange(1, 12);
+    while (top2 === top1) top2 = this.randomInRange(1, 12);
+    let top3 = this.randomInRange(1, 12);
+    while (top3 === top1 || top3 === top2) top3 = this.randomInRange(1, 12);
+    this.metrics.topCheckouts = `${top1} • ${top2} • ${top3}`;
+    this.metrics.topCheckoutsDetail = `Caisses avec le plus grand nombre de clients`;
+    this.metrics.topCheckoutsTrend = this.randomTrend(-5, 5);
+    this.metrics.topCheckoutsTrendText = this.metrics.topCheckoutsTrend === 0
+      ? 'Aucun changement dans le classement'
+      : 'Changement dans la positions des caisses';
+  }
+} 
