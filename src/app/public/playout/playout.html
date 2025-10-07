@@ -1,4 +1,4 @@
-<div class="layout-container" [class.collapsed]="isCollapsed">
+<div class="layout-container" [class.sidebar-collapsed]="isCollapsed">
   <nav class="professional-sidebar" [class.collapsed]="isCollapsed">
     <div class="sidebar-header">
       <button class="sidebar-toggle" (click)="isCollapsed = !isCollapsed">
@@ -15,22 +15,22 @@
 
     <div class="sidebar-content">
       <div class="nav-section" [class.collapsed]="isCollapsed">
-        <div>
+        <div class="market-label">
           Intermarché Test
         </div>
         <div class="nav-menu">
-          <a routerLink="/public/grid" routerLinkActive="active" class="nav-item">
+          <a routerLink="/public/grid" routerLinkActive="active" class="nav-item nested-item">
             <div class="item-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 3v8h8V3H3zm6 6H5V5h4v4zm-6 4v8h8v-8H3zm6 6H5v-4h4v4zm4-16v8h8V3h-8zm6 6h-4V5h4v4zm-6 4v8h8v-8h-8zm6 6h-4v-4h4v4z"/>
               </svg>
             </div>
             <div class="item-content">
-              <span class="item-title">Grille</span>
+              <span class="item-title">Live</span>
             </div>
           </a>
 
-          <a routerLink="/public/dashboard" routerLinkActive="active" class="nav-item">
+          <a routerLink="/public/dashboard" routerLinkActive="active" class="nav-item nested-item">
             <div class="item-icon">
               <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"/>
@@ -49,6 +49,13 @@
           <img class="avatar-img" src="https://picsum.photos/200/300" alt="Avatar">
           <span class="status-text">Mr Dupont</span>
         </div>
+        <button class="logout-btn" (click)="logout()" title="Logout">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+            <polyline points="16 17 21 12 16 7"></polyline>
+            <line x1="21" y1="12" x2="9" y2="12"></line>
+          </svg>
+        </button>
       </div>
     </div>
   </nav>
