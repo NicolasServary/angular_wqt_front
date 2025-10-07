@@ -163,6 +163,14 @@
   border-radius: 50%;
 }
 
+.avatar-img {
+  border-radius: 50%;
+  width: 40px; /* Adjust the size of the avatar */
+  height: 40px;
+  margin-right: 10px; /* Space between avatar and name */
+}
+
+
 .sidebar-footer {
   padding: 1.5rem;
   border-top: 1px solid rgba(255, 255, 255, 0.1);

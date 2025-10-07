@@ -57,6 +57,14 @@
   flex: 1;
 }
 
+.notification-content-2 {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: 1fr;
+  grid-column-gap: 15px;
+  grid-row-gap: 13px; 
+}
+
 .notification-title {
   font-size: 0.9375rem;
   font-weight: 600;

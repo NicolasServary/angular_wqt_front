@@ -15,6 +15,9 @@
 
     <div class="sidebar-content">
       <div class="nav-section" [class.collapsed]="isCollapsed">
+        <div>
+          Intermarché Test
+        </div>
         <div class="nav-menu">
           <a routerLink="/public/grid" routerLinkActive="active" class="nav-item">
             <div class="item-icon">
@@ -40,17 +43,15 @@
         </div>
       </div>
     </div>
-
     <div class="sidebar-footer">
       <div class="status-section">
         <div class="status-indicator">
-          <div class="status-dot"></div>
-          <span class="status-text">Système actif</span>
+          <img class="avatar-img" src="https://picsum.photos/200/300" alt="Avatar">
+          <span class="status-text">Mr Dupont</span>
         </div>
       </div>
     </div>
   </nav>
-
   <div class="main-content">
     <router-outlet></router-outlet>
   </div>
