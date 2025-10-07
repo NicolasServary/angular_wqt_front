@@ -18,6 +18,9 @@ export class Grid implements OnInit, OnDestroy {
   alertActive = false;
   criticalCheckouts: any[] = [];
   totalCheckouts = 15;
+  isAlertAcknowledged = false;
+  isAlertDismissed = false;
+  acknowledgeTimeout?: number;
 
   constructor(private checkoutService: CheckoutService) {
     this.checkouts = this.checkoutService.getCheckouts();
@@ -33,6 +36,22 @@ export class Grid implements OnInit, OnDestroy {
     if (this.alertInterval) {
       clearInterval(this.alertInterval);
     }
+    if (this.acknowledgeTimeout) {
+      clearTimeout(this.acknowledgeTimeout);
+    }
+  }
+
+  acknowledgeAlert() {
+    this.isAlertAcknowledged = true;
+
+    // Re-show the alert after 5 minutes (300000 ms)
+    this.acknowledgeTimeout = window.setTimeout(() => {
+      this.isAlertAcknowledged = false;
+    }, 300000);
+  }
+
+  dismissAlert() {
+    this.isAlertDismissed = true;
   }
 
   startAlertMonitoring() {

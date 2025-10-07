@@ -28,18 +28,33 @@
 }
 
 .professional-sidebar.collapsed {
-  width: 70px;
+  width: 80px;
 }
 
 .professional-sidebar.collapsed .brand-section,
 .professional-sidebar.collapsed .item-content,
+.professional-sidebar.collapsed .market-label {
+  display: none;
+}
+
 .professional-sidebar.collapsed .status-section {
+  justify-content: center;
+}
+
+.professional-sidebar.collapsed .status-indicator {
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.professional-sidebar.collapsed .status-text,
+.professional-sidebar.collapsed .logout-btn {
   display: none;
 }
 
 .professional-sidebar.collapsed .nav-item {
   justify-content: center;
-  padding: 0.875rem 0;
+  padding: 10px;
+  margin-left: 0;
 }
 
 .professional-sidebar.collapsed .item-icon {
@@ -47,7 +62,7 @@
 }
 
 .sidebar-header {
-  padding: 2rem 1.5rem 1.5rem;
+  padding: 2rem 1.6rem 1.5rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
@@ -73,6 +88,7 @@
 
 .brand-section {
   text-align: center;
+  transition: opacity 0.2s ease;
 }
 
 .brand-title {
@@ -106,6 +122,7 @@
   letter-spacing: 0.05em;
   margin-bottom: 0.75rem;
   padding: 0 1rem;
+  transition: opacity 0.2s ease;
 }
 
 .nav-menu {
@@ -137,14 +154,11 @@
 }
 
 .nav-item.active {
-  background: #10b981;
+  background: linear-gradient(90deg, #3b83f6, #2563eb);
   color: white;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.nav-item.active:hover {
-  background: #059669;
-}
 
 .item-icon {
   display: flex;
@@ -160,6 +174,7 @@
   flex-direction: column;
   gap: 0.125rem;
   flex: 1;
+  transition: opacity 0.2s ease;
 }
 
 .item-title {
@@ -181,7 +196,6 @@
   border-radius: 50%;
   width: 40px; /* Adjust the size of the avatar */
   height: 40px;
-  margin-right: 10px; /* Space between avatar and name */
 }
 
 
@@ -195,12 +209,14 @@
   align-items: center;
   justify-content: space-between;
   gap: 0.75rem;
+  transition: all 0.3s ease;
 }
 
 .status-indicator {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  transition: all 0.3s ease;
 }
 
 .logout-btn {
@@ -235,6 +251,7 @@
   font-size: 0.75rem;
   color: #9ca3af;
   font-weight: 500;
+  transition: opacity 0.2s ease;
 }
 
 @keyframes pulse {
@@ -249,12 +266,14 @@
   padding: 2.5rem 3rem;
   background: #fafafa;
   min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  transition: all 0.3s ease;
   position: relative;
+  width: calc(100% - 280px);
 }
 
 .layout-container.sidebar-collapsed .main-content {
   margin-left: 70px;
+  width: calc(100% - 70px);
 }
 
 /* =================== RESPONSIVE =================== */
